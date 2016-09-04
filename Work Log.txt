@@ -1,0 +1,4 @@
+Lets start with a TDD approach.
+
+1. Write a test that will count the score.
+ - I will use http://www.scalatest.org/
