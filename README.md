@@ -11,6 +11,7 @@ This implementation is my way to recall knowledge about Scala. I hope it to evol
 
 >The rules and terminology of a bowling game can be found [here](https://en.wikipedia.org/wiki/Ten-pin_bowling).
 
+
 ---
 ## Execute tests
 1. run ./bin/activator test
