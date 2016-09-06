@@ -28,50 +28,46 @@ class BowlingGame() {
       throw new RoundAlreadyPlayedException
   }
 
-  def score: Int = rounds.foldLeft(0)((score, round) => {
-
-    val nextRound = rounds.filter(b => b.roundNumber == round.roundNumber + 1)
-
+  def score: Int = rounds.foldLeft(0)((score, round) =>
     if (round.hasStrike)
-      score + BowlingGame.SPARE_AND_STRIKE_BASIC_SCORE + calculateAdditionalStrikePoints(round, nextRound)
+      score + BowlingGame.SPARE_AND_STRIKE_BASIC_SCORE + calculateAdditionalStrikePoints(round)
     else if (round.hasSpare)
-      score + BowlingGame.SPARE_AND_STRIKE_BASIC_SCORE + calculateAdditionalSparePoints(round, nextRound)
+      score + BowlingGame.SPARE_AND_STRIKE_BASIC_SCORE + calculateAdditionalSparePoints(round)
     else
-      score + round.standardThrows.sum
-  })
+      score + round.standardThrows.sum)
 
-  def calculateAdditionalStrikePoints(round: BowlingRound,
-                                      nextRound: List[BowlingRound]): Int =
+  def calculateAdditionalStrikePoints(round: BowlingRound): Int =
     round match {
-      case FinalBowlingRound(roundNumber, standardThrows, additionalThrows) =>
+      case FinalBowlingRound(_, _, additionalThrows) =>
         additionalThrows.sum
-      case NonFinalBowlingRound(roundNumber, standardThrows) =>
-        calculateAdditionalNonFinalStrikePoints(nextRound)
+      case NonFinalBowlingRound(_, _) =>
+        calculateAdditionalNonFinalStrikePoints(round)
     }
 
-  def calculateAdditionalNonFinalStrikePoints(nextRoundList: List[BowlingRound]): Int =
-    nextRoundList match {
+  def calculateAdditionalNonFinalStrikePoints(round: BowlingRound): Int =
+    nextRoundFor(round) match {
       case Nil => 0
       case nextRound :: rest => nextRound.standardThrows.sum +
         (rounds.filter(b => b.roundNumber == nextRound.roundNumber + 1) match {
-        case Nil => 0
-        case followingRound :: rest =>
-          if (nextRound.hasTwoStandardThrows) 0
-          else followingRound.standardThrows.head
+          case Nil => 0
+          case followingRound :: rest =>
+            if (nextRound.hasTwoStandardThrows) 0
+            else followingRound.standardThrows.head
         })
     }
 
-  def calculateAdditionalSparePoints(round: BowlingRound,
-                                     nextRoundList: List[BowlingRound]): Int =
+  def calculateAdditionalSparePoints(round: BowlingRound): Int =
     round match {
-      case FinalBowlingRound(roundNumber, standardThrows, additionalThrows) =>
+      case FinalBowlingRound(_, _, additionalThrows) =>
         additionalThrows.head
-      case NonFinalBowlingRound(roundNumber, standardThrows) =>
-        nextRoundList match {
+      case NonFinalBowlingRound(_, _) =>
+        nextRoundFor(round) match {
           case Nil => 0
           case nextRound :: rest => nextRound.standardThrows.head
         }
     }
+
+  def nextRoundFor(round: BowlingRound) = rounds.filter(b => b.roundNumber == round.roundNumber + 1)
 }
 
 object BowlingGame {
