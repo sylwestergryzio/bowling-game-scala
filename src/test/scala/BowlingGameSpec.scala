@@ -76,7 +76,7 @@ class BowlingGameSpec extends WordSpec with Matchers {
         game.completeRound(7, List(10))
         game.completeRound(8, List(9, 0))
         game.completeRound(9, List(8, 2))
-        game.completeRound(10, List(9, 1, 10))
+        game.completeRound(10, List(9, 1), List(10))
 
         game.score should be (187)
       }
@@ -92,7 +92,7 @@ class BowlingGameSpec extends WordSpec with Matchers {
         game.completeRound(7, List(10))
         game.completeRound(8, List(10))
         game.completeRound(9, List(9, 1))
-        game.completeRound(10, List(10, 10, 9))
+        game.completeRound(10, List(10), List(10, 9))
 
         game.score should be (234)
       }

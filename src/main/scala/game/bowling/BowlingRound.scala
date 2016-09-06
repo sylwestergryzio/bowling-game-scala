@@ -1,10 +1,20 @@
 package game.bowling
 
-case class BowlingRound(roundNumber: Int, allThrows: List[Int]) {
+abstract class BowlingRound {
+  def roundNumber: Int
 
-  def hasStrike = allThrows.head == 10
+  def standardThrows: List[Int]
 
-  def hasSpare = allThrows.head < 10 && allThrows.take(2).sum == 10
+  def hasStrike = standardThrows.head == 10
 
-  def isFinal = roundNumber == BowlingGame.MAX_ROUNDS
+  def hasSpare = standardThrows.head < 10 && standardThrows.take(2).sum == 10
+
+  def hasTwoStandardThrows = standardThrows.size == 2
 }
+
+case class NonFinalBowlingRound(roundNumber: Int,
+                                standardThrows: List[Int]) extends BowlingRound {}
+
+case class FinalBowlingRound(roundNumber: Int,
+                             standardThrows: List[Int],
+                             additionalThrows: List[Int]) extends BowlingRound {}
